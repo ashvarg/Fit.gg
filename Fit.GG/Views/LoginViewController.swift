@@ -6,8 +6,10 @@
 //
 import UIKit
 import FirebaseAuth
+import Firebase
 
 class LoginViewController: UIViewController {
+    
     
     @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
@@ -37,7 +39,9 @@ class LoginViewController: UIViewController {
             
             if user != nil {
                 self.performSegue(withIdentifier: "loggedInSegue", sender: self)
+                
             }
+            
             
         }
     }
@@ -46,7 +50,7 @@ class LoginViewController: UIViewController {
         Auth.auth().removeStateDidChangeListener(handle!)
     }
     
-    @IBAction func signUp(_ sender: Any) {
+    @IBAction func SignUp(_ sender: Any) {
         guard let email = emailField.text else {
             displayMessage(title: "Empty Email", message: "Email cannot be empty.")
             return
@@ -66,7 +70,8 @@ class LoginViewController: UIViewController {
             displayMessage(title: "Sign Up Failed", message: "Error ocurred when signing up.")
         }
     }
-        
+
+    
     @IBAction func signIn(_ sender: Any) {
         guard let email = emailField.text, let password = passwordField.text else {
             displayMessage(title: "Empty Fields", message: "Email and password cannot be empty.")
@@ -82,10 +87,7 @@ class LoginViewController: UIViewController {
         else {
             displayMessage(title: "Login Failed", message: "Error occured when logging in.")
         }
-        
-        
     }
-    
     /*
     // MARK: - Navigation
 
