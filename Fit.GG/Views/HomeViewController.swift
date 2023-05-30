@@ -13,7 +13,7 @@ class HomeViewController: UIViewController {
     
     var handle: AuthStateDidChangeListenerHandle?
     
-    weak var databaseController: DatabaseProtocol?
+    weak var databaseController: FireDatabaseProtocol?
 
 
     @IBAction func signOut(_ sender: Any) {
@@ -27,7 +27,7 @@ class HomeViewController: UIViewController {
    
     override func viewDidLoad() {
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        databaseController = appDelegate?.databaseController
+        databaseController = appDelegate?.FireDatabaseController
         super.viewDidLoad()
         
 

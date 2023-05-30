@@ -13,19 +13,27 @@ enum DatabaseChange {
 
 enum ListenerType {
     case user
-    case team
-    case heroes
+    case entry
+    case food
     case all
+    case entries
+    case breakfastFood
+    case lunchFood
+    case dinnerFood
 }
 
 protocol DatabaseListener: AnyObject {
     var listenerType: ListenerType {get set}
+    func onEntryListChange(change: DatabaseChange, entries: [Entry])
+    func onBreakfastListChange(change: DatabaseChange, entryFood: [Food])
+    func onLunchListChange(change: DatabaseChange, entryFood: [Food])
+    func onDinnerListChange(change: DatabaseChange, entryFood: [Food])
 //    func onAuthChange(change: )
    
 
 }
 
-protocol DatabaseProtocol: AnyObject {
+protocol FireDatabaseProtocol: AnyObject {
     func cleanUp()
     
     func addListener(listener: DatabaseListener)
@@ -35,5 +43,22 @@ protocol DatabaseProtocol: AnyObject {
     func signInWith(email: String, password: String) -> Bool
     func signUpWith(email: String, password: String) -> Bool
     func signOut()
+   
+}
+
+protocol CoreDatabaseProtocol: AnyObject {
+    var currentEntry: Entry? {get set}
+    func cleanUp()
+    func addEntry(entryName: String) -> Entry
+    func addListener(listener: DatabaseListener)
+    func removeListener(listener: DatabaseListener)
+    func deleteEntry(entry: Entry)
+    func addFoodToEntry(food: Food, entry: Entry, entryListType: String) -> Bool
+    func removeFoodFromEntry(food: Food, entry: Entry)
+    
+   
+    
+    
+    
    
 }

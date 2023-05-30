@@ -7,7 +7,7 @@
 
 import UIKit
 
-class FoodData: NSObject, Decodable {
+public class FoodData: NSObject, Decodable {
     var name: String?
     var dataType: String?
     var calories: Int?
@@ -29,7 +29,7 @@ class FoodData: NSObject, Decodable {
         var unitName: String
     }
     
-    required init(from decoder: Decoder) throws {
+    required public init(from decoder: Decoder) throws {
         let foodContainer = try decoder.container(keyedBy: RootKeys.self)
         
         name = try foodContainer.decode(String.self, forKey: .description)

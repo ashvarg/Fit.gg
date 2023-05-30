@@ -7,7 +7,7 @@ import Firebase
 import FirebaseFirestoreSwift
 import FirebaseAuth
 
-class FirebaseController: NSObject, DatabaseProtocol {
+class FirebaseController: NSObject, FireDatabaseProtocol {
     
     var listeners = MulticastDelegate<DatabaseListener>()
     var user: User?

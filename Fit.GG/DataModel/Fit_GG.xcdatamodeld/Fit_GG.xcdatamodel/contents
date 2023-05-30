@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22E261" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Entity" representedClassName="Entity" syncable="YES" codeGenerationType="class"/>
+    <entity name="Entry" representedClassName="Entry" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="log" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="totalCalories" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="weight" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="breakfast" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Food" inverseName="breakfastFood" inverseEntity="Food"/>
+        <relationship name="dinner" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Food" inverseName="dinnerFood" inverseEntity="Food"/>
+        <relationship name="lunch" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Food" inverseName="lunchFood" inverseEntity="Food"/>
+    </entity>
+    <entity name="Food" representedClassName="Food" syncable="YES">
+        <attribute name="calories" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="carbohydrates" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="fats" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="protein" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="breakfastFood" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Entry" inverseName="breakfast" inverseEntity="Entry"/>
+        <relationship name="dinnerFood" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Entry" inverseName="dinner" inverseEntity="Entry"/>
+        <relationship name="lunchFood" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Entry" inverseName="lunch" inverseEntity="Entry"/>
+    </entity>
 </model>

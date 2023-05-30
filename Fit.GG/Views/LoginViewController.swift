@@ -16,13 +16,13 @@ class LoginViewController: UIViewController {
     
     var handle: AuthStateDidChangeListenerHandle?
     
-    weak var databaseController: DatabaseProtocol?
+    weak var databaseController: FireDatabaseProtocol?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        databaseController = appDelegate?.databaseController
+        databaseController = appDelegate?.FireDatabaseController
         
         // Do any additional setup after loading the view.
     }
@@ -100,13 +100,5 @@ class LoginViewController: UIViewController {
     
     // MARK: - Miscellaneous
     
-    func displayMessage(title: String, message: String) {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
-        alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-        
-        self.present(alertController, animated: true, completion: nil)
-    }
-
 }
 

@@ -8,12 +8,15 @@
 import UIKit
 
 class SearchFoodTableViewController: UITableViewController, UISearchBarDelegate {
+    weak var currentEntry: Entry?
+    var foodList: String?
+    
     let CELL_FOOD = "foodCell"
     let API_KEY = "1G9rwL9m83iSEbDUooAKtri6vEJIY64lbhnkA1YK"
     let REQUEST_STRING = "https://api.nal.usda.gov/fdc/v1/foods/search?dataType=Survey%20%28FNDDS%29&api_key=1G9rwL9m83iSEbDUooAKtri6vEJIY64lbhnkA1YK&query="
     var newFood = [FoodData]()
     var indicator = UIActivityIndicatorView()
-    weak var databaseController: DatabaseProtocol?
+    weak var databaseController: CoreDatabaseProtocol?
     
     
     override func viewDidLoad() {
@@ -34,7 +37,7 @@ class SearchFoodTableViewController: UITableViewController, UISearchBarDelegate 
         NSLayoutConstraint.activate([indicator.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor), indicator.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor)])
         
         let appDelegate = (UIApplication.shared.delegate as? AppDelegate)
-        databaseController = appDelegate?.databaseController
+        databaseController = appDelegate?.CoreDatabaseController
         
         super.viewDidLoad()
     }
