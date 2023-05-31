@@ -73,10 +73,12 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
         listeners.removeDelegate(listener)
     }
     
-    func addEntry(entryName: String) -> Entry {
+    func addEntry(entryName: String, entryDate: Date, entryWeight: Int64) -> Entry {
         let entry = NSEntityDescription.insertNewObject(forEntityName: "Entry",
         into: persistentContainer.viewContext) as! Entry
         entry.name = entryName
+        entry.date = entryDate
+        entry.weight = entryWeight
         print("entry added")
         return entry
         
@@ -88,7 +90,29 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
         persistentContainer.viewContext.delete(entry)
     }
     
-    
+    func editEntry(entryName: String, newName: String, newEntryDate: Date, newEntryWeight: Int64) -> Bool {
+        
+        let fetchRequest: NSFetchRequest<Entry> = Entry.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "name == %@", entryName)
+        
+        let context = persistentContainer.viewContext
+        
+        do{
+            let results = try context.fetch(fetchRequest)
+            if let editedEntry = results.first {
+                editedEntry.name = newName
+                editedEntry.date = newEntryDate
+                editedEntry.weight = newEntryWeight
+                
+                try context.save()
+            }
+            
+        } catch{
+            print("Fetch singular entry failed: \(error)")
+        }
+        
+        return true
+    }
     func addFoodToEntry(food: Food, entry: Entry, entryListType: String) -> Bool {
         if entryListType == "breakfast"{
             guard let breakfast = entry.breakfast, breakfast.contains(food) == false

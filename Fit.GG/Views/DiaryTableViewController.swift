@@ -72,14 +72,24 @@ class DiaryTableViewController: UITableViewController, DatabaseListener {
         // Pass the selected object to the new view controller
         if segue.identifier == "createEntry"{
             
-            let destination = segue.destination as! EntryViewController
+            let _ = segue.destination as! EntryViewController
             let name = ""
-            let entry = databaseController?.addEntry(entryName: name)
+            let date = Date()
+            let weight = Int64(0)
+            let entry = databaseController?.addEntry(entryName: name, entryDate: date, entryWeight: weight)
             print("Entry has been added")
             databaseController?.currentEntry = entry
             
         }
+        else if segue.identifier == "diaryToEntrySegue"{
+            if let cell = sender as? UITableViewCell, let indexPath = tableView.indexPath(for: cell){
+                let entry = totalEntries[indexPath.row]
+                databaseController?.currentEntry = entry
+                let destination = segue.destination as! EntryViewController
+                destination.editingFlag = true
+            }
             
+        }
     }
     
 
@@ -114,6 +124,7 @@ class DiaryTableViewController: UITableViewController, DatabaseListener {
         }
     
     }
+    
     
     
     /*

@@ -10,9 +10,14 @@ import UIKit
 class EntryViewController: UIViewController, DatabaseListener, UITableViewDelegate, UITableViewDataSource {
     
     
+    
     var listenerType = ListenerType.all
     
+    var editingFlag: Bool!
+    
     @IBOutlet weak var dateField: UITextField!
+    
+    let datePicker = UIDatePicker()
     
     @IBOutlet weak var nameField: UITextField!
     
@@ -31,13 +36,15 @@ class EntryViewController: UIViewController, DatabaseListener, UITableViewDelega
     
     weak var databaseController: CoreDatabaseProtocol?
     
+    
     override func viewDidLoad() {
         self.tabBarController?.tabBar.isHidden = true
         super.viewDidLoad()
         
-        
+    
         let backButton = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(backButtonPressed))
         navigationItem.leftBarButtonItem = backButton
+        createDatePicker()
         breakfastTableView.delegate = self
         lunchTableView.delegate = self
         dinnerTableView.delegate = self
@@ -50,25 +57,84 @@ class EntryViewController: UIViewController, DatabaseListener, UITableViewDelega
         databaseController = appDelegate?.CoreDatabaseController
         
         // Do any additional setup after loading the view.
+        nameField.text = databaseController?.currentEntry?.name
+        if let weight = databaseController?.currentEntry?.weight {
+            weightField.text = String(weight)
+        } else{
+            weightField.text = nil
+        }
+        
+        if let date = databaseController?.currentEntry?.date{
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "MMM d, yyyy"
+            let dateString = dateFormatter.string(from: date)
+            dateField.text = dateString
+        } else{
+            dateField.text = nil
+        }
+            
         
     }
     
+    func createToolBar() -> UIToolbar{
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        
+        
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: #selector(donePressed))
+        toolbar.setItems([doneButton], animated: true)
+        
+        return toolbar
+    }
+    
+    func createDatePicker(){
+        datePicker.preferredDatePickerStyle = .wheels
+        datePicker.datePickerMode = .date
+        dateField.inputView = datePicker
+        dateField.inputAccessoryView = createToolBar()
+        
+    }
+    
+    @objc func donePressed(){
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .none
+        self.dateField.text = dateFormatter.string(from: datePicker.date)
+        self.view.endEditing(true)
+        
+        
+    }
     
     @objc private func backButtonPressed(){
-        let alertController = UIAlertController(title: "Confirmation", message: "Are you sure you want to go back?", preferredStyle: .alert)
-        let cancelAction = UIAlertAction(title: "Cancel", style: .default){[weak self] (_) in
-            self?.navigationController?.navigationBar.isUserInteractionEnabled = true
+        if editingFlag != true{
+            let alertController = UIAlertController(title: "Confirmation", message: "Are you sure you want to go back?", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "Cancel", style: .default){[weak self] (_) in
+                self?.navigationController?.navigationBar.isUserInteractionEnabled = true
+            }
+            let confirmAction = UIAlertAction(title: "Yes", style: .destructive){ [weak self] (_) in
+                let entry = self?.databaseController?.currentEntry
+                self?.databaseController?.deleteEntry(entry: entry!)
+                
+                self?.navigationController?.popViewController(animated: true)
+            }
+            alertController.addAction(cancelAction)
+            alertController.addAction(confirmAction)
+            self.navigationController?.navigationBar.isUserInteractionEnabled = false
+            self.present(alertController, animated: true, completion: nil)
         }
-        let confirmAction = UIAlertAction(title: "Yes", style: .destructive){ [weak self] (_) in
-            let entry = self?.databaseController?.currentEntry
-            self?.databaseController?.deleteEntry(entry: entry!)
-            
-            self?.navigationController?.popViewController(animated: true)
+        else{
+            let alertController = UIAlertController(title: "Go Back?", message: "Changes won't be saved", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "Cancel", style: .default){[weak self] (_) in
+                self?.navigationController?.navigationBar.isUserInteractionEnabled = true
+            }
+            let confirmAction = UIAlertAction(title: "Yes", style: .destructive){ [weak self] (_) in
+                self?.navigationController?.popViewController(animated: true)
+            }
+            alertController.addAction(cancelAction)
+            alertController.addAction(confirmAction)
+            self.navigationController?.navigationBar.isUserInteractionEnabled = false
+            self.present(alertController, animated: true, completion: nil)
         }
-        alertController.addAction(cancelAction)
-        alertController.addAction(confirmAction)
-        self.navigationController?.navigationBar.isUserInteractionEnabled = false
-        self.present(alertController, animated: true, completion: nil)
     }
     
     
@@ -95,7 +161,20 @@ class EntryViewController: UIViewController, DatabaseListener, UITableViewDelega
             return
         }
         
-        let _ = databaseController?.addEntry(entryName: name)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMM d, yyyy"
+        print(date)
+        guard let newdate = dateFormatter.date(from: date) else{
+            displayMessage(title: "error", message: "Date not formatted Correctly")
+            return
+        }
+        
+        guard let weight = Int64(weight) else{
+            displayMessage(title: "Weight error", message: "Weight not parsed")
+            return
+        }
+        
+        let _ = databaseController?.editEntry(entryName: (databaseController?.currentEntry?.name)!, newName: name, newEntryDate: newdate, newEntryWeight: weight)
         print("Entry has been added")
         navigationController?.popViewController(animated: true)
         self.tabBarController?.tabBar.isHidden = false
@@ -155,9 +234,11 @@ class EntryViewController: UIViewController, DatabaseListener, UITableViewDelega
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller
         if segue.identifier == "BreakfastAddSegue"{
-            
+            let destination = segue.destination as! SearchFoodTableViewController
+            destination.foodListType = "Breakfast"
             
         }
+        
             
     }
 
@@ -188,6 +269,7 @@ class EntryViewController: UIViewController, DatabaseListener, UITableViewDelega
         // Pass the selected object to the new view controller.
     }
     */
+    
 
 }
 

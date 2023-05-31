@@ -9,7 +9,7 @@ import UIKit
 
 class SearchFoodTableViewController: UITableViewController, UISearchBarDelegate {
     weak var currentEntry: Entry?
-    var foodList: String?
+    var foodListType: String?
     
     let CELL_FOOD = "foodCell"
     let API_KEY = "1G9rwL9m83iSEbDUooAKtri6vEJIY64lbhnkA1YK"

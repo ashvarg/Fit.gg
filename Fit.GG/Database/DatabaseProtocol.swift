@@ -49,7 +49,8 @@ protocol FireDatabaseProtocol: AnyObject {
 protocol CoreDatabaseProtocol: AnyObject {
     var currentEntry: Entry? {get set}
     func cleanUp()
-    func addEntry(entryName: String) -> Entry
+    func addEntry(entryName: String, entryDate: Date, entryWeight: Int64) -> Entry
+    func editEntry(entryName: String, newName: String, newEntryDate: Date, newEntryWeight: Int64) -> Bool
     func addListener(listener: DatabaseListener)
     func removeListener(listener: DatabaseListener)
     func deleteEntry(entry: Entry)
