@@ -28,7 +28,12 @@ class CalorieChartViewController: UIViewController, DatabaseListener {
         // Do any additional setup after loading the view.
     }
     
+    
+
     func convertEntriesToData() -> [(Date,Double)]{
+        /**
+         Converts the entries from core data to points that can be used in the graph
+         */
         var tuples: [(Date,Double)] = []
         for entry in totalEntries{
             tuples.append((entry.date!, Double(entry.weight)))
@@ -58,7 +63,9 @@ class CalorieChartViewController: UIViewController, DatabaseListener {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         databaseController?.addListener(listener: self)
+        // Converts entries to graph data
         chartData = convertEntriesToData()
+        // Creates a new chartview
         let chartView = CalorieChartUIView(data: chartData)
         let hostingController = UIHostingController(rootView: chartView)
         guard let chartViewHost = hostingController.view else{
@@ -71,12 +78,14 @@ class CalorieChartViewController: UIViewController, DatabaseListener {
         chartViewHost.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([chartViewHost.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12.0),
-                                    chartViewHost.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12.0), chartViewHost.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 12.0), chartViewHost.widthAnchor.constraint(equalTo: chartViewHost.heightAnchor)])
+                                    chartViewHost.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12.0), chartViewHost.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 150.0), chartViewHost.widthAnchor.constraint(equalTo: chartViewHost.heightAnchor)])
         
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         databaseController?.removeListener(listener: self)
+        chartData.removeAll()
+        
     }
 }

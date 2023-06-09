@@ -27,6 +27,7 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
     
     
     override init(){
+        // Initialises the Core Data stack
         persistentContainer = NSPersistentContainer(name: "Fit_GG")
         persistentContainer.loadPersistentStores() { (description, error) in
             if let error {
@@ -75,6 +76,7 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
         listeners.removeDelegate(listener)
     }
     
+    // Adds entry to coredata
     func addEntry(entryName: String, entryDate: Date, entryWeight: Int64, entryLog: String) -> Entry {
         let entry = NSEntityDescription.insertNewObject(forEntityName: "Entry",
         into: persistentContainer.viewContext) as! Entry
@@ -88,11 +90,12 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
         
     }
 
-    
+    // Deletes the entry from coredata
     func deleteEntry(entry: Entry) {
         persistentContainer.viewContext.delete(entry)
     }
     
+    // Once save is clicked, the entry being edited will be fetched and changed with the necessary changes
     func editEntry(entryName: String, newName: String, newEntryDate: Date, newEntryWeight: Int64, newLog: String) -> Bool {
         
         let fetchRequest: NSFetchRequest<Entry> = Entry.fetchRequest()
@@ -118,6 +121,7 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
         return true
     }
     
+    // Converts the object from the API to the food format from core data
     func convertFoodDataToFood(foodData: FoodData) -> Food {
         let food = NSEntityDescription.insertNewObject(forEntityName: "Food",
         into: persistentContainer.viewContext) as! Food
@@ -130,6 +134,8 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
         
         return food
     }
+    
+    // Adds food to the respective entry based on which relationship food has with entry
     func addFoodToEntry(foodData: FoodData, entry: Entry, entryListType: String) -> Bool {
         
         let food = convertFoodDataToFood(foodData: foodData)
@@ -170,11 +176,7 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
         
     }
 
-    
-    func removeFoodFromEntry(food: Food, entry: Entry) {
-        
-    }
-    
+    // Fetches list of entries from coredata
     func fetchAllEntries() -> [Entry]{
         if allEntriesFetchedResultsController == nil {
             let request: NSFetchRequest<Entry> = Entry.fetchRequest()
@@ -199,6 +201,7 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
         return  [Entry]()
     }
     
+    // fetches all food from coredata
     func fetchAllFood() -> [Food] {
         /*
         check if the fetched results controller is nil (i.e., not instantiated)
@@ -232,7 +235,9 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
         return [Food]()
     }
     
+    // fetches food from the breakfast category
     func fetchBreakfastFood() -> [Food] {
+        // fetches current entry
         let fetchRequest: NSFetchRequest<Food> = Food.fetchRequest()
         let nameSortDescriptor = NSSortDescriptor(key: "name", ascending: true)
         
@@ -267,7 +272,9 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
     
     }
     
+    // fetches food from the lunch category
     func fetchLunchFood() -> [Food] {
+        // fetches current entry
         let fetchRequest: NSFetchRequest<Food> = Food.fetchRequest()
         let nameSortDescriptor = NSSortDescriptor(key: "name", ascending: true)
         
@@ -302,7 +309,9 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
     
     }
     
+    // fetches food from the dinner category
     func fetchDinnerFood() -> [Food] {
+        // fetches current entry
         let fetchRequest: NSFetchRequest<Food> = Food.fetchRequest()
         let nameSortDescriptor = NSSortDescriptor(key: "name", ascending: true)
         
@@ -337,6 +346,7 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
     
     }
     
+    // Performs actions based on which view controller is the listener and what type of listener are they
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         if controller == allEntriesFetchedResultsController {
             listeners.invoke() {listener in

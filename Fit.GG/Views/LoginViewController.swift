@@ -33,6 +33,9 @@ class LoginViewController: UIViewController {
     
     
     override func viewDidAppear(_ animated: Bool) {
+        /*
+         Handles the listener in terms of checking whether the user is still logged in
+         */
         handle = Auth.auth().addStateDidChangeListener { auth, user in
             
             (self.databaseController as! FirebaseController).currentUser = user
@@ -51,6 +54,9 @@ class LoginViewController: UIViewController {
     }
     
     @IBAction func SignUp(_ sender: Any) {
+        /*
+         Gets user email and signs the user up
+         */
         guard let email = emailField.text else {
             displayMessage(title: "Empty Email", message: "Email cannot be empty.")
             return
@@ -73,6 +79,9 @@ class LoginViewController: UIViewController {
 
     
     @IBAction func signIn(_ sender: Any) {
+        /*
+         Uses Firebase to sign in into the app
+         */
         guard let email = emailField.text, let password = passwordField.text else {
             displayMessage(title: "Empty Fields", message: "Email and password cannot be empty.")
             return

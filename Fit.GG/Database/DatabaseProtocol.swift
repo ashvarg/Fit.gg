@@ -1,5 +1,8 @@
 //
 //  DatabaseProtocol.swift
+//  Fit.GG
+//
+//  Created by Ashwin George on 11/5/2023.
 //
 
 import Foundation
@@ -28,7 +31,6 @@ protocol DatabaseListener: AnyObject {
     func onBreakfastListChange(change: DatabaseChange, entryFood: [Food])
     func onLunchListChange(change: DatabaseChange, entryFood: [Food])
     func onDinnerListChange(change: DatabaseChange, entryFood: [Food])
-//    func onAuthChange(change: )
    
 
 }
@@ -56,7 +58,6 @@ protocol CoreDatabaseProtocol: AnyObject {
     func deleteEntry(entry: Entry)
     func addFoodToEntry(foodData: FoodData, entry: Entry, entryListType: String) -> Bool
     func convertFoodDataToFood(foodData: FoodData) -> Food
-    func removeFoodFromEntry(food: Food, entry: Entry)
     
    
     

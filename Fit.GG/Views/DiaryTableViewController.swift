@@ -3,7 +3,7 @@
 //  Fit.GG
 //
 //  Created by Ashwin George on 11/5/2023.
-//
+// Table that contains entries
 
 import UIKit
 
@@ -18,7 +18,7 @@ class DiaryTableViewController: UITableViewController, DatabaseListener {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         databaseController = appDelegate?.CoreDatabaseController
         
@@ -45,12 +45,12 @@ class DiaryTableViewController: UITableViewController, DatabaseListener {
     }
     
     // MARK: - Table view data source
-
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
     }
-
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return totalEntries.count
@@ -67,10 +67,11 @@ class DiaryTableViewController: UITableViewController, DatabaseListener {
         super.viewWillDisappear(animated)
         databaseController?.removeListener(listener: self)
     }
-
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller
+        // Creates a new entry that is edited and saved if the user wants the entry
+        
         if segue.identifier == "createEntry"{
             
             let _ = segue.destination as! EntryViewController
@@ -83,6 +84,7 @@ class DiaryTableViewController: UITableViewController, DatabaseListener {
             databaseController?.currentEntry = entry
             
         }
+        // Segue when user clicks on an entry
         else if segue.identifier == "diaryToEntrySegue"{
             if let cell = sender as? UITableViewCell, let indexPath = tableView.indexPath(for: cell){
                 let entry = totalEntries[indexPath.row]
@@ -94,7 +96,7 @@ class DiaryTableViewController: UITableViewController, DatabaseListener {
         }
     }
     
-
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let entryCell = tableView.dequeueReusableCell(withIdentifier: CELL_ENTRY, for: indexPath)
         var content = entryCell.defaultContentConfiguration()
@@ -105,18 +107,16 @@ class DiaryTableViewController: UITableViewController, DatabaseListener {
         return entryCell
     }
     
-
     
     
-    // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
+       
         return true
     }
     
-
     
-    // Override to support editing the table view.
+    
+    
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete && indexPath.section == SECTION_ENTRY{
             // Delete the row from the data source
@@ -124,34 +124,8 @@ class DiaryTableViewController: UITableViewController, DatabaseListener {
             databaseController?.deleteEntry(entry: entry)
             
         }
-    
+        
     }
     
     
-    
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

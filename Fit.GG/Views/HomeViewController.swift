@@ -17,13 +17,16 @@ class HomeViewController: UIViewController {
 
 
     @IBAction func signOut(_ sender: Any) {
+        /*
+         Signs out the user
+         */
         do {
             try Auth.auth().signOut()
         } catch let error {
             print("Error: ", error.localizedDescription)
         }
         
-        displayMessage(title: "Signed Out", message: "You have been signed out.")
+        displayMessage(title: "Signed Out", message: "You have been signed out. Please refresh the app")
         
         navigationController?.popViewController(animated: true)
         

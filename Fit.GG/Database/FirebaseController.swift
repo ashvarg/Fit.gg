@@ -1,5 +1,8 @@
 //
 //  FirebaseController.swift
+//  Fit.GG
+//
+//  Created by Ashwin George on 11/5/2023.
 //
 
 import UIKit
@@ -41,7 +44,7 @@ class FirebaseController: NSObject, FireDatabaseProtocol {
         let user = User()
         user.id = userId
         print(userId)
-        if let userRef = usersRef?.document(userId).setData(["team" : ""]) {
+        if let _ = usersRef?.document(userId).setData(["team" : ""]) {
             print("USER CREATED SUCCESSFULLY")
         }
         
@@ -68,12 +71,10 @@ class FirebaseController: NSObject, FireDatabaseProtocol {
         
         usersRef?.document(userId).addSnapshotListener { (querySnapshot, error) in
             
-            guard let userSnapshot = querySnapshot else {
+            guard let _ = querySnapshot else {
                 print("Error fetching users: \(String(describing: error))")
                 return
             }
-            
-//            self.parseUserSnapshot(snapshot: userSnapshot as! QueryDocumentSnapshot)
             
         }
     }

@@ -3,13 +3,15 @@
 //  Fit.GG
 //
 //  Created by Ashwin George on 2/6/2023.
-//
+//  Reference: https://youtu.be/ZMe6Xq2gCGs (Drawing Line Graph in SwiftUI)
 
 import SwiftUI
 import Charts
 
 struct LineChartView: View{
+    // y axis values
     let values: [Double]
+    // x axis labels
     let labels: [String]
     
     let screenWidth = UIScreen.main.bounds.width
@@ -19,6 +21,7 @@ struct LineChartView: View{
             return Path()
         }
         
+        // offset between each data point
         var offsetX: Int = Int(screenWidth/CGFloat(values.count))
         var path = Path()
         path.move(to: CGPoint(x: offsetX, y: Int(values[0])))
@@ -32,7 +35,8 @@ struct LineChartView: View{
     }
     var body: some View{
         VStack {
-            path.stroke(Color.black, lineWidth: 2.0)
+            // creates the path between each point
+            path.stroke(Color.green, lineWidth: 2.0)
                 .rotationEffect(.degrees(180), anchor: .center)
                 .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z:0))
                 
@@ -54,13 +58,14 @@ struct CalorieChartUIView: View {
     var labels: [String]
     var calories : [Double]
     
+    // initialising the calorie graph
     init(data: [(Date, Double)]){
         maxY = 0.0
         minY = 0.0
         labels = []
         calories = []
         
-        let sortedData = sortData(data: data)
+        var sortedData = sortData(data: data)
         labels = convertToDateString(sortedData: sortedData)
         calories = getSortedValues(sortedData: sortedData)
             
@@ -85,11 +90,19 @@ struct CalorieChartUIView_Previews: PreviewProvider {
 }
 
 func sortData(data: [(date: Date,value: Double)]) -> [(date: Date,value: Double)]{
+    /**
+     Sorts data from earliest to latest data
+     */
     let sortedData = data.sorted(by: {$0.date < $1.date})
     return sortedData
 }
 
+
+
 func getMinY(data: [(date:Date,value: Double)]) -> Double{
+    /**
+     Gets minimum value
+     */
     var returnMin = Double(0)
     if let minValueTuple = data.min(by: {$0.value < $1.value}){
         let minValue = minValueTuple.value
@@ -104,6 +117,9 @@ func getMinY(data: [(date:Date,value: Double)]) -> Double{
 }
 
 func getMaxY(data: [(date:Date,value: Double)]) -> Double{
+    /**
+     Gets maximum Value
+     */
     var returnMax = Double(0)
     if let maxValueTuple = data.max(by: {$0.value < $1.value}){
         let maxValue = maxValueTuple.value
@@ -118,6 +134,9 @@ func getMaxY(data: [(date:Date,value: Double)]) -> Double{
 
   
 func getStartAndEndDate(from data: [(date: Date, value: Double)]) -> (startDate: Date?, endDate: Date?) {
+    /**
+     Gets starting and ending date
+     */
     let startDate = data.min(by: { $0.date < $1.date })?.date
     let endDate = data.max(by: { $0.date < $1.date })?.date
     return (startDate, endDate)
@@ -125,6 +144,9 @@ func getStartAndEndDate(from data: [(date: Date, value: Double)]) -> (startDate:
 
 
 func convertToDateString(sortedData: [(date: Date,value: Double)]) -> [String]{
+    /**
+     Converts the date object to a string
+     */
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "yyyy-MM-dd"
     
@@ -134,11 +156,17 @@ func convertToDateString(sortedData: [(date: Date,value: Double)]) -> [String]{
 }
 
 func getSortedValues(sortedData: [(date: Date, value: Double)]) -> [Double]{
+    /*
+     gets sorted values
+     */
     let sortedValues = sortedData.map {$0.value }
     return sortedValues
 }
 
 func defaultValues() -> [(date: Date,value: Double)]{
+    /*
+     Default values to show in the preview
+     */
     var data: [(date: Date,value: Double)] = []
     let calendar = Calendar.current
     let startDate = calendar.date(byAdding: .day, value: -7, to: Date())!

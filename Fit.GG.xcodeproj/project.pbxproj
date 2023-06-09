@@ -37,6 +37,9 @@
 		58C9C11A2A29B2D400A02922 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 58C9C1192A29B2D400A02922 /* FirebaseAuth */; };
 		58C9C11C2A29B2D400A02922 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 58C9C11B2A29B2D400A02922 /* FirebaseFirestore */; };
 		58C9C11E2A29B2D400A02922 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 58C9C11D2A29B2D400A02922 /* FirebaseFirestoreSwift */; };
+		58C9C1202A32D73B00A02922 /* AcheivementTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C9C11F2A32D73B00A02922 /* AcheivementTableViewCell.swift */; };
+		58C9C1222A32D80000A02922 /* AchievementTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C9C1212A32D80000A02922 /* AchievementTableViewController.swift */; };
+		58F567BE2A32E61E00C696CB /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58F567BD2A32E61E00C696CB /* AboutViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +72,9 @@
 		588E32542A0C9F5000EB6CF4 /* CoreDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataController.swift; sourceTree = "<group>"; };
 		589EE7702A028C7100F316B0 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		58C9C1162A29ACD300A02922 /* CalorieChartUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalorieChartUIView.swift; sourceTree = "<group>"; };
+		58C9C11F2A32D73B00A02922 /* AcheivementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcheivementTableViewCell.swift; sourceTree = "<group>"; };
+		58C9C1212A32D80000A02922 /* AchievementTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementTableViewController.swift; sourceTree = "<group>"; };
+		58F567BD2A32E61E00C696CB /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,6 +162,9 @@
 				588E32522A0C9ADA00EB6CF4 /* EntryViewController.swift */,
 				588A9A182A28C9580002FC27 /* CalorieChartViewController.swift */,
 				58C9C1162A29ACD300A02922 /* CalorieChartUIView.swift */,
+				58C9C11F2A32D73B00A02922 /* AcheivementTableViewCell.swift */,
+				58C9C1212A32D80000A02922 /* AchievementTableViewController.swift */,
+				58F567BD2A32E61E00C696CB /* AboutViewController.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -253,6 +262,7 @@
 				583A86562A015BD6004D7455 /* MulticastDelegate.swift in Sources */,
 				58284EBA2A0352FA00B06BAA /* TabBarController.swift in Sources */,
 				583A862E2A014C2A004D7455 /* SceneDelegate.swift in Sources */,
+				58C9C1202A32D73B00A02922 /* AcheivementTableViewCell.swift in Sources */,
 				588E324D2A0C94D500EB6CF4 /* DiaryTableViewController.swift in Sources */,
 				583A86592A015F69004D7455 /* User.swift in Sources */,
 				589EE7712A028C7100F316B0 /* HomeViewController.swift in Sources */,
@@ -262,6 +272,8 @@
 				588E32552A0C9F5000EB6CF4 /* CoreDataController.swift in Sources */,
 				588A9A152A27823C0002FC27 /* Entry+CoreDataProperties.swift in Sources */,
 				583A86552A015BD6004D7455 /* DatabaseProtocol.swift in Sources */,
+				58C9C1222A32D80000A02922 /* AchievementTableViewController.swift in Sources */,
+				58F567BE2A32E61E00C696CB /* AboutViewController.swift in Sources */,
 				585415722A035D870054F9C7 /* SearchFoodTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
