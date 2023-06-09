@@ -40,7 +40,7 @@ protocol FireDatabaseProtocol: AnyObject {
     func removeListener(listener: DatabaseListener)
     
     
-    func signInWith(email: String, password: String) -> Bool
+    func signInWith(email: String, password: String, completion: @escaping (Bool) -> Void)
     func signUpWith(email: String, password: String) -> Bool
     func signOut()
    
@@ -49,12 +49,13 @@ protocol FireDatabaseProtocol: AnyObject {
 protocol CoreDatabaseProtocol: AnyObject {
     var currentEntry: Entry? {get set}
     func cleanUp()
-    func addEntry(entryName: String, entryDate: Date, entryWeight: Int64) -> Entry
-    func editEntry(entryName: String, newName: String, newEntryDate: Date, newEntryWeight: Int64) -> Bool
+    func addEntry(entryName: String, entryDate: Date, entryWeight: Int64, entryLog: String) -> Entry
+    func editEntry(entryName: String, newName: String, newEntryDate: Date, newEntryWeight: Int64, newLog: String) -> Bool
     func addListener(listener: DatabaseListener)
     func removeListener(listener: DatabaseListener)
     func deleteEntry(entry: Entry)
-    func addFoodToEntry(food: Food, entry: Entry, entryListType: String) -> Bool
+    func addFoodToEntry(foodData: FoodData, entry: Entry, entryListType: String) -> Bool
+    func convertFoodDataToFood(foodData: FoodData) -> Food
     func removeFoodFromEntry(food: Food, entry: Entry)
     
    

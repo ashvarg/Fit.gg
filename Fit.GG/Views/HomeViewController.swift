@@ -22,6 +22,12 @@ class HomeViewController: UIViewController {
         } catch let error {
             print("Error: ", error.localizedDescription)
         }
+        
+        displayMessage(title: "Signed Out", message: "You have been signed out.")
+        
+        navigationController?.popViewController(animated: true)
+        
+    
     }
     
    

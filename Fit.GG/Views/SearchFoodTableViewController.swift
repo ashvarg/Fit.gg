@@ -39,7 +39,8 @@ class SearchFoodTableViewController: UITableViewController, UISearchBarDelegate 
         let appDelegate = (UIApplication.shared.delegate as? AppDelegate)
         databaseController = appDelegate?.CoreDatabaseController
         
-        super.viewDidLoad()
+        currentEntry = databaseController?.currentEntry
+        
     }
 
     // MARK: - Table view data source
@@ -60,13 +61,31 @@ class SearchFoodTableViewController: UITableViewController, UISearchBarDelegate 
         
         let food = newFood[indexPath.row]
         cell.textLabel?.text = food.name
-        cell.detailTextLabel?.text = String(food.dataType!)
+        cell.detailTextLabel?.text = String(food.calories!)
         
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    
+        if foodListType == "breakfast"{
+            let food = newFood[indexPath.row]
+            let _ = databaseController?.addFoodToEntry(foodData: food, entry: currentEntry!, entryListType: "breakfast")
+            print("Breakfast added")
+            navigationController?.popViewController(animated: true)
+        }
+        
+        else if foodListType == "lunch"{
+            let food = newFood[indexPath.row]
+            let _ = databaseController?.addFoodToEntry(foodData: food, entry: currentEntry!, entryListType: "lunch")
+            print("lunch added")
+            navigationController?.popViewController(animated: true)
+        }
+        else if foodListType == "dinner"{
+            let food = newFood[indexPath.row]
+            let _ = databaseController?.addFoodToEntry(foodData: food, entry: currentEntry!, entryListType: "dinner")
+            print("dinner added")
+            navigationController?.popViewController(animated: true)
+        }
     }
     
     func requestFoodsNamed(_ foodName: String) async {

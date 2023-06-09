@@ -9,6 +9,8 @@ import UIKit
 import CoreData
 
 class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreDatabaseProtocol  {
+    
+    
     var currentEntry: Entry?
     var currentFoodList: Array<Food>?
     var listeners = MulticastDelegate<DatabaseListener>()
@@ -23,7 +25,7 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
     
     
     
-
+    
     override init(){
         persistentContainer = NSPersistentContainer(name: "Fit_GG")
         persistentContainer.loadPersistentStores() { (description, error) in
@@ -36,12 +38,12 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
         super.init()
     }
     
-
+    
     
     func cleanUp() {
         /*
          check to see if there are changes to be saved inside of the view context and then save
-        */
+         */
         if persistentContainer.viewContext.hasChanges{
             do{
                 try persistentContainer.viewContext.save()
@@ -51,34 +53,35 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
         }
     }
     
-
+    
     func addListener(listener: DatabaseListener) {
         listeners.addDelegate(listener)
-        if listener.listenerType == .entry || listener.listenerType == .all {
+        if listener.listenerType == .entries || listener.listenerType == .all {
             listener.onEntryListChange(change: .update, entries: fetchAllEntries())
         }
-        if listener.listenerType == .breakfastFood{
+        if listener.listenerType == .breakfastFood || listener.listenerType == .all{
             listener.onBreakfastListChange(change: .update, entryFood: fetchBreakfastFood())
         }
-        if listener.listenerType == .lunchFood{
+        if listener.listenerType == .lunchFood || listener.listenerType == .all{
             listener.onLunchListChange(change: .update, entryFood: fetchLunchFood())
         }
-        if listener.listenerType == .dinnerFood{
+        if listener.listenerType == .dinnerFood || listener.listenerType == .all{
             listener.onDinnerListChange(change: .update, entryFood: fetchDinnerFood())
         }
-        listener.onEntryListChange(change: .update, entries: fetchAllEntries())
+        
     }
     
     func removeListener(listener: DatabaseListener) {
         listeners.removeDelegate(listener)
     }
     
-    func addEntry(entryName: String, entryDate: Date, entryWeight: Int64) -> Entry {
+    func addEntry(entryName: String, entryDate: Date, entryWeight: Int64, entryLog: String) -> Entry {
         let entry = NSEntityDescription.insertNewObject(forEntityName: "Entry",
         into: persistentContainer.viewContext) as! Entry
         entry.name = entryName
         entry.date = entryDate
         entry.weight = entryWeight
+        entry.log = entryLog
         print("entry added")
         return entry
         
@@ -90,7 +93,7 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
         persistentContainer.viewContext.delete(entry)
     }
     
-    func editEntry(entryName: String, newName: String, newEntryDate: Date, newEntryWeight: Int64) -> Bool {
+    func editEntry(entryName: String, newName: String, newEntryDate: Date, newEntryWeight: Int64, newLog: String) -> Bool {
         
         let fetchRequest: NSFetchRequest<Entry> = Entry.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "name == %@", entryName)
@@ -103,6 +106,7 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
                 editedEntry.name = newName
                 editedEntry.date = newEntryDate
                 editedEntry.weight = newEntryWeight
+                editedEntry.log = newLog
                 
                 try context.save()
             }
@@ -113,7 +117,23 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
         
         return true
     }
-    func addFoodToEntry(food: Food, entry: Entry, entryListType: String) -> Bool {
+    
+    func convertFoodDataToFood(foodData: FoodData) -> Food {
+        let food = NSEntityDescription.insertNewObject(forEntityName: "Food",
+        into: persistentContainer.viewContext) as! Food
+        food.name = foodData.name
+        food.calories = foodData.calories!
+        food.carbohydrates = foodData.carbohydrates!
+        food.protein = foodData.proteins!
+        food.fats = foodData.fats!
+        
+        
+        return food
+    }
+    func addFoodToEntry(foodData: FoodData, entry: Entry, entryListType: String) -> Bool {
+        
+        let food = convertFoodDataToFood(foodData: foodData)
+        
         if entryListType == "breakfast"{
             guard let breakfast = entry.breakfast, breakfast.contains(food) == false
             else{
@@ -220,7 +240,7 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
         print(entryName ?? "error")
         
         
-        let predicate = NSPredicate(format: "ANY entries.name == %@ AND SELF in %@", entryName!, currentEntry?.breakfast ?? [])
+        let predicate = NSPredicate(format: "ANY breakfastFood.name == %@", entryName!)
     
         fetchRequest.sortDescriptors = [nameSortDescriptor]
         fetchRequest.predicate = predicate
@@ -255,7 +275,7 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
         print(entryName ?? "error")
         
         
-        let predicate = NSPredicate(format: "ANY entries.name == %@ AND SELF in %@", entryName!, currentEntry?.lunch ?? [])
+        let predicate = NSPredicate(format: "ANY lunchFood.name == %@", entryName!)
     
         fetchRequest.sortDescriptors = [nameSortDescriptor]
         fetchRequest.predicate = predicate
@@ -290,7 +310,7 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
         print(entryName ?? "error")
         
         
-        let predicate = NSPredicate(format: "ANY entries.name == %@ AND SELF in %@", entryName!, currentEntry?.dinner ?? [])
+        let predicate = NSPredicate(format: "ANY dinnerFood.name == %@", entryName!)
     
         fetchRequest.sortDescriptors = [nameSortDescriptor]
         fetchRequest.predicate = predicate
@@ -305,7 +325,7 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
         do {
             try dinnerFetchedResultsController?.performFetch()
         } catch {
-            print("Failed to fetch breakfast foods: \(error)")
+            print("Failed to fetch dinner foods: \(error)")
         }
             
         
@@ -328,21 +348,21 @@ class CoreDataController: NSObject, NSFetchedResultsControllerDelegate, CoreData
         }
         else if controller == breakfastFetchedResultsController {
             listeners.invoke() {listener in
-                if listener.listenerType == .breakfastFood{
+                if listener.listenerType == .breakfastFood || listener.listenerType == .all{
                     listener.onBreakfastListChange(change: .update, entryFood: fetchBreakfastFood())
                 }
             }
         }
         else if controller == lunchFetchedResultsController {
             listeners.invoke() {listener in
-                if listener.listenerType == .lunchFood{
+                if listener.listenerType == .lunchFood || listener.listenerType == .all{
                     listener.onLunchListChange(change: .update, entryFood: fetchLunchFood())
                 }
             }
         }
         else if controller == dinnerFetchedResultsController {
             listeners.invoke() {listener in
-                if listener.listenerType == .dinnerFood{
+                if listener.listenerType == .dinnerFood || listener.listenerType == .all{
                     listener.onDinnerListChange(change: .update, entryFood: fetchDinnerFood())
                 }
             }

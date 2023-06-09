@@ -48,13 +48,7 @@ class FirebaseController: NSObject, FireDatabaseProtocol {
         return user
     }
     
-//        if let teamRef = teamsRef?.addDocument(data: ["name" : teamName, "heroes" : []]) {
-//            team.id = teamRef.documentID
-//            print("TEAM CREATED SUCCESSFULLY")
-//        }
-//
-//        return team
-//    }
+
     
     
 
@@ -98,20 +92,20 @@ class FirebaseController: NSObject, FireDatabaseProtocol {
     
     // MARK: - Authentication
     
-    func signInWith(email: String, password: String) -> Bool {
-        var result = false
-        DispatchQueue.main.async {
-            Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
-                guard let strongSelf = self else { return }
-                
-                if let user = authResult?.user, error == nil {
-                    strongSelf.currentUser = user
-                    result = true
-                }
+    func signInWith(email: String, password: String, completion: @escaping (Bool) -> Void) {
+        Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
+            guard let strongSelf = self else {
+                completion(false)
+                return
+            }
+            
+            if let user = authResult?.user, error == nil {
+                strongSelf.currentUser = user
+                completion(true)
+            } else {
+                completion(false)
             }
         }
-        
-        return result
     }
     
     func signUpWith(email: String, password: String) -> Bool {

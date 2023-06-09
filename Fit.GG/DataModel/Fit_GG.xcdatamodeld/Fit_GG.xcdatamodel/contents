@@ -11,13 +11,13 @@
         <relationship name="lunch" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Food" inverseName="lunchFood" inverseEntity="Food"/>
     </entity>
     <entity name="Food" representedClassName="Food" syncable="YES">
-        <attribute name="calories" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="carbohydrates" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="fats" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="calories" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="carbohydrates" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="fats" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
-        <attribute name="protein" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="breakfastFood" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Entry" inverseName="breakfast" inverseEntity="Entry"/>
-        <relationship name="dinnerFood" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Entry" inverseName="dinner" inverseEntity="Entry"/>
-        <relationship name="lunchFood" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Entry" inverseName="lunch" inverseEntity="Entry"/>
+        <attribute name="protein" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="breakfastFood" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Entry" inverseName="breakfast" inverseEntity="Entry"/>
+        <relationship name="dinnerFood" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Entry" inverseName="dinner" inverseEntity="Entry"/>
+        <relationship name="lunchFood" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Entry" inverseName="lunch" inverseEntity="Entry"/>
     </entity>
 </model>

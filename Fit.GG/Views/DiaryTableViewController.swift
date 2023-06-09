@@ -59,6 +59,7 @@ class DiaryTableViewController: UITableViewController, DatabaseListener {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         databaseController?.addListener(listener: self)
+        self.tabBarController?.tabBar.isHidden = false
         print(totalEntries.count)
     }
     
@@ -76,7 +77,8 @@ class DiaryTableViewController: UITableViewController, DatabaseListener {
             let name = ""
             let date = Date()
             let weight = Int64(0)
-            let entry = databaseController?.addEntry(entryName: name, entryDate: date, entryWeight: weight)
+            let log = ""
+            let entry = databaseController?.addEntry(entryName: name, entryDate: date, entryWeight: weight, entryLog: log)
             print("Entry has been added")
             databaseController?.currentEntry = entry
             

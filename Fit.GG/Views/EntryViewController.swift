@@ -34,6 +34,8 @@ class EntryViewController: UIViewController, DatabaseListener, UITableViewDelega
     var lunchData: [Food] = []
     var dinnerData: [Food] = []
     
+    @IBOutlet weak var totalCaloriesField: UITextField!
+    
     weak var databaseController: CoreDatabaseProtocol?
     
     
@@ -57,7 +59,16 @@ class EntryViewController: UIViewController, DatabaseListener, UITableViewDelega
         databaseController = appDelegate?.CoreDatabaseController
         
         // Do any additional setup after loading the view.
+        initializeFieldValues()
+            
+        print(breakfastData.count)
+    }
+    
+    func initializeFieldValues(){
+        
         nameField.text = databaseController?.currentEntry?.name
+        
+        logField.text = databaseController?.currentEntry?.log
         if let weight = databaseController?.currentEntry?.weight {
             weightField.text = String(weight)
         } else{
@@ -72,7 +83,6 @@ class EntryViewController: UIViewController, DatabaseListener, UITableViewDelega
         } else{
             dateField.text = nil
         }
-            
         
     }
     
@@ -104,6 +114,7 @@ class EntryViewController: UIViewController, DatabaseListener, UITableViewDelega
         
         
     }
+    
     
     @objc private func backButtonPressed(){
         if editingFlag != true{
@@ -141,7 +152,7 @@ class EntryViewController: UIViewController, DatabaseListener, UITableViewDelega
     
     @IBAction func createEntry(_ sender: Any) {
         
-        guard let date = dateField.text, let weight = weightField.text, let name = nameField.text
+        guard let date = dateField.text, let weight = weightField.text, let name = nameField.text, let log = logField.text
         else{
             return
         }
@@ -163,7 +174,6 @@ class EntryViewController: UIViewController, DatabaseListener, UITableViewDelega
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d, yyyy"
-        print(date)
         guard let newdate = dateFormatter.date(from: date) else{
             displayMessage(title: "error", message: "Date not formatted Correctly")
             return
@@ -174,10 +184,32 @@ class EntryViewController: UIViewController, DatabaseListener, UITableViewDelega
             return
         }
         
-        let _ = databaseController?.editEntry(entryName: (databaseController?.currentEntry?.name)!, newName: name, newEntryDate: newdate, newEntryWeight: weight)
-        print("Entry has been added")
+        let _ = databaseController?.editEntry(entryName: (databaseController?.currentEntry?.name)!, newName: name, newEntryDate: newdate, newEntryWeight: weight, newLog: log)
         navigationController?.popViewController(animated: true)
         self.tabBarController?.tabBar.isHidden = false
+    }
+    
+    func calculateCalories() -> Double {
+        var totalBreakfastCalories = Double(0)
+        var totalLunchCalories = Double(0)
+        var totalDinnerCalories = Double(0)
+        
+        for breakfast in breakfastData {
+            totalBreakfastCalories += breakfast.calories
+        }
+        
+        for lunch in lunchData {
+            totalLunchCalories += lunch.calories
+        }
+        
+        for dinner in dinnerData{
+            totalDinnerCalories += dinner.calories
+        }
+        
+        let totalCalories = totalBreakfastCalories + totalLunchCalories + totalDinnerCalories
+        
+        return totalCalories
+        
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -209,8 +241,10 @@ class EntryViewController: UIViewController, DatabaseListener, UITableViewDelega
             
         case breakfastTableView:
             cell = tableView.dequeueReusableCell(withIdentifier: "breakfastCell", for: indexPath)
+            var content = cell.defaultContentConfiguration()
             let food = breakfastData[indexPath.row]
-            cell.textLabel?.text = food.name
+            content.text = food.name
+            cell.contentConfiguration = content
             
             
         case lunchTableView:
@@ -233,10 +267,20 @@ class EntryViewController: UIViewController, DatabaseListener, UITableViewDelega
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller
-        if segue.identifier == "BreakfastAddSegue"{
+        if segue.identifier == "breakfastAddSegue"{
             let destination = segue.destination as! SearchFoodTableViewController
-            destination.foodListType = "Breakfast"
+            destination.foodListType = "breakfast"
             
+        }
+        else if segue.identifier == "lunchAddSegue"{
+            let destination = segue.destination as! SearchFoodTableViewController
+            destination.foodListType = "lunch"
+            
+        }
+        else if segue.identifier == "dinnerAddSegue"{
+            let destination = segue.destination as! SearchFoodTableViewController
+            destination.foodListType = "dinner"
+        
         }
         
             
@@ -259,6 +303,18 @@ class EntryViewController: UIViewController, DatabaseListener, UITableViewDelega
     func onDinnerListChange(change: DatabaseChange, entryFood: [Food]) {
         dinnerData = entryFood
         dinnerTableView.reloadData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        databaseController?.addListener(listener: self)
+        totalCaloriesField.text = String(calculateCalories())
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        databaseController?.removeListener(listener: self)
+        
     }
     /*
     // MARK: - Navigation

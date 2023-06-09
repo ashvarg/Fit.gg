@@ -77,15 +77,15 @@ class LoginViewController: UIViewController {
             displayMessage(title: "Empty Fields", message: "Email and password cannot be empty.")
             return
         }
-        
-        
-        let result = databaseController!.signInWith(email: email, password: password)
-        
-        if result {
-            displayMessage(title: "Login Success", message: "Logged in successfully.")
-        }
-        else {
-            displayMessage(title: "Login Failed", message: "Error occured when logging in.")
+            
+        databaseController!.signInWith(email: email, password: password) { success in
+            DispatchQueue.main.async {
+                if success {
+                    self.displayMessage(title: "Login Success", message: "Logged in successfully.")
+                } else {
+                    self.displayMessage(title: "Login Failed", message: "Error occurred when logging in.")
+                }
+            }
         }
     }
     /*

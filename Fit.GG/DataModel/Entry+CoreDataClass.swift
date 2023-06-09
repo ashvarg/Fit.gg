@@ -2,7 +2,7 @@
 //  Entry+CoreDataClass.swift
 //  Fit.GG
 //
-//  Created by Ashwin George on 28/5/2023.
+//  Created by Ashwin George on 31/5/2023.
 //
 //
 
